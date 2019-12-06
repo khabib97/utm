@@ -30,19 +30,123 @@ namespace UTM
         double minY = Double.MaxValue;
 
         //Set Up serial communication
-        private void setUpComPort() {
+        private void SetUpComPort()
+        {
             try
             {
                 serialPort = new SerialPort(portName, baundRate);
                 serialPort.DataReceived += new SerialDataReceivedEventHandler(_serialPort_DataReceived);
                 serialPort.Open();
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 Console.WriteLine(e);
             }
         }
 
-        private void calculateData(StringBuilder utmStorageData) 
+        void _serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            SerialPort sp = (SerialPort)sender;
+
+            realTimeStorage.Append(sp.ReadExisting());
+        }
+
+        public UTMForm() {
+            InitializeComponent();
+            utm_chart.Series[0].ChartType = SeriesChartType.Line;
+        }
+
+        private void UTMForm_Load(object sender, EventArgs e) { }
+
+        //Thread Function
+        private void GetGraphData()
+        {
+            while (true)
+            {
+                graphPlotDataList = new List<GraphData>();
+                CalculateData(realTimeStorage);
+                if (utm_chart.IsHandleCreated)
+                    this.Invoke((MethodInvoker)delegate { UpdateUTMChart(); });
+
+                Thread.Sleep(1000);
+            }
+        }
+
+        private void UpdateUTMChart()
+        {
+            utm_chart.Series[0].Points.Clear();
+            foreach (GraphData gData in graphPlotDataList)
+            {
+                utm_chart.Series[0].Points.AddXY(gData.x, gData.y);
+            }
+        }
+
+        //invoke when set_up button click
+        private void set_up_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                LoadDataFromSettingForm();
+                ShowInfo("Message: Set Up Done!");
+
+                
+                SetUpComPort();
+            }
+            catch (Exception ex)
+            {
+                RefreshSettingFormData();
+                ShowError("Message: Please set up form with correct data");
+                Console.WriteLine(ex);
+            }
+        }
+
+        //invoke when start_button_click
+        private void start_button_Click(object sender, EventArgs e)
+        {
+            serialPort.Write("sbem");
+            Thread.Sleep(100);
+            realTimeStorage = new StringBuilder();
+            utmGraphThread = new Thread(new ThreadStart(this.GetGraphData));
+            utmGraphThread.IsBackground = true;
+            utmGraphThread.Start();
+        }
+
+        //invoke when stop_button_click
+        private void stop_button_Click(object sender, EventArgs e) { }
+
+        private void ShowError(string msg)
+        {
+            message_label.ForeColor = Color.Red;
+            message_label.Text = msg;
+        }
+
+        private void ShowInfo(string msg)
+        {
+            message_label.ForeColor = Color.Green;
+            message_label.Text = msg;
+        }
+
+        private void LoadDataFromSettingForm()
+        {
+            portName = port_name.Text;
+            baundRate = System.Convert.ToInt32(baund_rate.Text);
+            area = System.Convert.ToDouble(A.Text);
+            lenght = System.Convert.ToDouble(L.Text);
+            displacementPerPulse = System.Convert.ToDouble(displacement_per_puls.Text);
+            forceConversionFactor = System.Convert.ToDouble(force_conversion_factor.Text);
+        }
+
+        private void RefreshSettingFormData()
+        {
+            port_name.Text = "";
+            baund_rate.Text = "";
+            A.Text = "";
+            L.Text = "";
+            displacement_per_puls.Text = "";
+            force_conversion_factor.Text = "";
+        }
+
+        private void CalculateData(StringBuilder utmStorageData)
         {
             try
             {
@@ -69,86 +173,15 @@ namespace UTM
                             GraphData gData = new GraphData();
                             gData.x = X;
                             gData.y = Y;
-                            
+
                             graphPlotDataList.Add(gData);
                         }
                     }
                 }
             }
-            catch (Exception ex) {
-
-            }
-        }
-
-        void _serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
-        {
-            SerialPort sp = (SerialPort)sender;
-
-            realTimeStorage.Append(sp.ReadExisting());
-        }
-
-        public UTMForm(){InitializeComponent();}
-
-        private void UTMForm_Load(object sender, EventArgs e){}
-
-        private void start_button_Click(object sender, EventArgs e)
-        {
-            serialPort.Write("sbem");
-            Thread.Sleep(100);
-            realTimeStorage = new StringBuilder();
-            utmGraphThread = new Thread(new ThreadStart(this.getGraphData));
-            utmGraphThread.IsBackground = true;
-            utmGraphThread.Start();
-        }
-
-        private void stop_button_Click(object sender, EventArgs e){}
-        private void getGraphData()
-        {
-            while (true)
+            catch (Exception ex)
             {
-                graphPlotDataList = new List<GraphData>();
-                calculateData(realTimeStorage);
-                if (utm_chart.IsHandleCreated)
-                    this.Invoke((MethodInvoker)delegate{ UpdateUTMChart(); });
-                
-                Thread.Sleep(1000);
-            }
-        }
-
-        private void UpdateUTMChart()
-        {
-            utm_chart.Series[0].Points.Clear();
-            foreach (GraphData gData in graphPlotDataList)
-            {
-                utm_chart.Series[0].Points.AddXY(gData.x, gData.y);
-            }
-        }
-
-        private void set_up_Click(object sender, EventArgs e)
-        {
-            try {
-                portName = port_name.Text;
-                baundRate = System.Convert.ToInt32(baund_rate.Text);
-                area = System.Convert.ToDouble(A.Text);
-                lenght = System.Convert.ToDouble(L.Text);
-                displacementPerPulse = System.Convert.ToDouble(displacement_per_puls.Text);
-                forceConversionFactor = System.Convert.ToDouble(force_conversion_factor.Text);
-                message_label.Text = "Message: Set Up Done!";
-                message_label.ForeColor = Color.Green;
-                utm_chart.Series[0].ChartType = SeriesChartType.Line;
-                setUpComPort();
-            }
-            catch(Exception ex)
-            {
-                port_name.Text = "";
-                baund_rate.Text = "";
-                A.Text = "";
-                L.Text = "";
-                displacement_per_puls.Text = "";
-                force_conversion_factor.Text = "";
-                message_label.Text = "Message: Please set up form with correct data";
-                message_label.ForeColor = Color.Red;
-                Console.WriteLine(ex);
+                //ignore data parsing exception
             }
         }
     }
