@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 
 using System.IO.Ports;
+using System.Management;
 using System.IO;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -53,7 +54,10 @@ namespace UTM
 
         public UTMForm() {
             InitializeComponent();
+
             utm_chart.Series[0].ChartType = SeriesChartType.Line;
+
+            port_name.Text = AutodetectArduinoPort(); 
         }
 
         private void UTMForm_Load(object sender, EventArgs e) { }
@@ -74,10 +78,16 @@ namespace UTM
 
         private void UpdateUTMChart()
         {
-            utm_chart.Series[0].Points.Clear();
-            foreach (GraphData gData in graphPlotDataList)
+            try
             {
-                utm_chart.Series[0].Points.AddXY(gData.x, gData.y);
+                utm_chart.Series[0].Points.Clear();
+                foreach (GraphData gData in graphPlotDataList)
+                {
+                    utm_chart.Series[0].Points.AddXY(gData.x, gData.y);
+                }
+            }
+            catch (Exception ex) {
+                //ignore 
             }
         }
 
@@ -89,12 +99,11 @@ namespace UTM
                 LoadDataFromSettingForm();
                 ShowInfo("Message: Set Up Done!");
 
-                
                 SetUpComPort();
             }
             catch (Exception ex)
             {
-                RefreshSettingFormData();
+                //RefreshFormSettingData();
                 ShowError("Message: Please set up form with correct data");
                 Console.WriteLine(ex);
             }
@@ -104,7 +113,9 @@ namespace UTM
         private void start_button_Click(object sender, EventArgs e)
         {
             serialPort.Write("sbem");
+            ShowInfo("Message: Experiment Running...");
             Thread.Sleep(100);
+            
             realTimeStorage = new StringBuilder();
             utmGraphThread = new Thread(new ThreadStart(this.GetGraphData));
             utmGraphThread.IsBackground = true;
@@ -112,7 +123,10 @@ namespace UTM
         }
 
         //invoke when stop_button_click
-        private void stop_button_Click(object sender, EventArgs e) { }
+        private void stop_button_Click(object sender, EventArgs e) {
+            serialPort.Write("sxem");
+            ShowInfo("Message: Experiment Cancel");
+        }
 
         private void ShowError(string msg)
         {
@@ -136,9 +150,9 @@ namespace UTM
             forceConversionFactor = System.Convert.ToDouble(force_conversion_factor.Text);
         }
 
-        private void RefreshSettingFormData()
+        private void RefreshFormSettingData()
         {
-            port_name.Text = "";
+            //port_name.Text = "";
             baund_rate.Text = "";
             A.Text = "";
             L.Text = "";
@@ -183,6 +197,30 @@ namespace UTM
             {
                 //ignore data parsing exception
             }
+        }
+
+
+        // if this method failed to detect port name, then user can manually update port
+        private string AutodetectArduinoPort()
+        {
+            ManagementScope connectionScope = new ManagementScope();
+            SelectQuery serialQuery = new SelectQuery("SELECT * FROM Win32_SerialPort");
+            ManagementObjectSearcher searcher = new ManagementObjectSearcher(connectionScope, serialQuery);
+
+            try
+            {
+                foreach (ManagementObject item in searcher.Get())
+                {
+                    //string desc = item["Description"].ToString();
+                    return item["DeviceID"].ToString();
+                }
+            }
+            catch (Exception e)
+            {
+                /* Do Nothing */
+            }
+
+            return "";
         }
     }
 }
