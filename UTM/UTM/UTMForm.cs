@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Text;
 using System.Threading;
 
 using System.IO.Ports;
-using System.Management;
-using System.IO;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
@@ -48,16 +42,14 @@ namespace UTM
         void _serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             SerialPort sp = (SerialPort)sender;
-
             realTimeStorage.Append(sp.ReadExisting());
         }
 
-        public UTMForm() {
+        public UTMForm()
+        {
             InitializeComponent();
-
             utm_chart.Series[0].ChartType = SeriesChartType.Line;
-
-            port_name.Text = AutodetectArduinoPort(); 
+            port_name.Text = Util.AutodetectArduinoPort();
         }
 
         private void UTMForm_Load(object sender, EventArgs e) { }
@@ -86,8 +78,9 @@ namespace UTM
                     utm_chart.Series[0].Points.AddXY(gData.x, gData.y);
                 }
             }
-            catch (Exception ex) {
-                //ignore 
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
             }
         }
 
@@ -96,15 +89,16 @@ namespace UTM
         {
             try
             {
+
                 LoadDataFromSettingForm();
-                ShowInfo("Message: Set Up Done!");
+                Util.ShowInfo(message_label, "Message: Set Up Done!");
 
                 SetUpComPort();
             }
             catch (Exception ex)
             {
                 //RefreshFormSettingData();
-                ShowError("Message: Please set up form with correct data");
+                Util.ShowError(message_label, "Message: Please set up form with correct data");
                 Console.WriteLine(ex);
             }
         }
@@ -112,32 +106,48 @@ namespace UTM
         //invoke when start_button_click
         private void start_button_Click(object sender, EventArgs e)
         {
-            serialPort.Write("sbem");
-            ShowInfo("Message: Experiment Running...");
-            Thread.Sleep(100);
-            
+            minY = Double.MaxValue;
             realTimeStorage = new StringBuilder();
-            utmGraphThread = new Thread(new ThreadStart(this.GetGraphData));
-            utmGraphThread.IsBackground = true;
-            utmGraphThread.Start();
+            Util.ShowInfo(message_label, "Message: Experiment Running...");
+            
+            try
+            {
+                serialPort.Write("sbem");
+                Thread.Sleep(100);
+            }
+            catch (Exception ex)
+            {
+                Util.ShowError(message_label, "Message: Port Closed");
+                Console.WriteLine(ex);
+            }
+
+            try
+            {
+                utmGraphThread = new Thread(new ThreadStart(this.GetGraphData));
+                utmGraphThread.IsBackground = true;
+                utmGraphThread.Start();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
 
         //invoke when stop_button_click
-        private void stop_button_Click(object sender, EventArgs e) {
-            serialPort.Write("sxem");
-            ShowInfo("Message: Experiment Cancel");
-        }
-
-        private void ShowError(string msg)
+        private void stop_button_Click(object sender, EventArgs e)
         {
-            message_label.ForeColor = Color.Red;
-            message_label.Text = msg;
-        }
+            Util.ShowInfo(message_label, "Message: Experiment Stop!");
 
-        private void ShowInfo(string msg)
-        {
-            message_label.ForeColor = Color.Green;
-            message_label.Text = msg;
+            try
+            {
+                serialPort.Write("sxem");
+                serialPort.Close();
+            }
+            catch (Exception ex)
+            {
+                Util.ShowError(message_label, "Message: Port Closed");
+                Console.WriteLine(ex);
+            }
         }
 
         private void LoadDataFromSettingForm()
@@ -197,30 +207,6 @@ namespace UTM
             {
                 //ignore data parsing exception
             }
-        }
-
-
-        // if this method failed to detect port name, then user can manually update port
-        private string AutodetectArduinoPort()
-        {
-            ManagementScope connectionScope = new ManagementScope();
-            SelectQuery serialQuery = new SelectQuery("SELECT * FROM Win32_SerialPort");
-            ManagementObjectSearcher searcher = new ManagementObjectSearcher(connectionScope, serialQuery);
-
-            try
-            {
-                foreach (ManagementObject item in searcher.Get())
-                {
-                    //string desc = item["Description"].ToString();
-                    return item["DeviceID"].ToString();
-                }
-            }
-            catch (Exception e)
-            {
-                /* Do Nothing */
-            }
-
-            return "";
         }
     }
 }
