@@ -9,5 +9,7 @@ namespace UTM
     {
         public double x {  get; set; }
         public double y {  get; set; }
+        public double raw_x { get; set; }
+        public double raw_y { get; set; }
     }
 }

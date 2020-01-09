@@ -31,85 +31,77 @@
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UTMForm));
+
+            this.WebCamCapture = new WebCam_Capture.WebCamCapture();
+            this.pictureBox = new System.Windows.Forms.PictureBox();
+
             this.start_button = new System.Windows.Forms.Button();
             this.stop_button = new System.Windows.Forms.Button();
-            this.port_name = new System.Windows.Forms.ComboBox();
-            this.baund_rate = new System.Windows.Forms.TextBox();
-            this.set_up = new System.Windows.Forms.Button();
             this.utm_chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.force_conversion_factor = new System.Windows.Forms.TextBox();
             this.A = new System.Windows.Forms.TextBox();
-            this.displacement_per_puls = new System.Windows.Forms.TextBox();
             this.L = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
             this.message_label = new System.Windows.Forms.Label();
-            this.guide = new System.Windows.Forms.Label();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.menuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.settingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.guideToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.graph_label = new System.Windows.Forms.Label();
+            this.camera_button = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.utm_chart)).BeginInit();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // WebCamCapture
+            // 
+            this.WebCamCapture.CaptureHeight = 240;
+            this.WebCamCapture.CaptureWidth = 320;
+            this.WebCamCapture.FrameNumber = ((ulong)(0ul));
+            this.WebCamCapture.Location = new System.Drawing.Point(17, 17);
+            this.WebCamCapture.Name = "WebCamCapture";
+            this.WebCamCapture.Size = new System.Drawing.Size(342, 252);
+            this.WebCamCapture.TabIndex = 0;
+            this.WebCamCapture.TimeToCapture_milliseconds = 100;
+            this.WebCamCapture.ImageCaptured += new WebCam_Capture.WebCamCapture.WebCamEventHandler(this.WebCamCapture_ImageCaptured);
+            // 
+            // pictureBox
+            // 
+            this.pictureBox.Location = new System.Drawing.Point(6, 6);
+            this.pictureBox.Name = "pictureBox";
+            this.pictureBox.Size = new System.Drawing.Size(512, 512);
+            this.pictureBox.TabIndex = 0;
+            this.pictureBox.TabStop = false;
             // 
             // start_button
             // 
-            this.start_button.Location = new System.Drawing.Point(1129, 51);
+            this.start_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.start_button.ForeColor = System.Drawing.Color.Green;
+            this.start_button.Location = new System.Drawing.Point(1118, 42);
             this.start_button.Name = "start_button";
             this.start_button.Size = new System.Drawing.Size(150, 40);
             this.start_button.TabIndex = 0;
-            this.start_button.Text = "start button";
+            this.start_button.Text = "Start";
             this.start_button.UseVisualStyleBackColor = true;
             this.start_button.Click += new System.EventHandler(this.start_button_Click);
             // 
             // stop_button
             // 
-            this.stop_button.Location = new System.Drawing.Point(1129, 97);
+            this.stop_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.stop_button.ForeColor = System.Drawing.Color.Red;
+            this.stop_button.Location = new System.Drawing.Point(1118, 88);
             this.stop_button.Name = "stop_button";
             this.stop_button.Size = new System.Drawing.Size(150, 36);
             this.stop_button.TabIndex = 1;
-            this.stop_button.Text = "stop button";
+            this.stop_button.Text = "Stop";
             this.stop_button.UseVisualStyleBackColor = true;
             this.stop_button.Click += new System.EventHandler(this.stop_button_Click);
-            // 
-            // port_name
-            // 
-            this.port_name.FormattingEnabled = true;
-            this.port_name.Items.AddRange(new object[] {
-            "COM1",
-            "COM2",
-            "COM3",
-            "COM4",
-            "COM5",
-            "COM6",
-            "COM7",
-            "COM8",
-            "COM9",
-            "COM10",
-            "COM11",
-            "COM12"});
-            this.port_name.Location = new System.Drawing.Point(826, 81);
-            this.port_name.Name = "port_name";
-            this.port_name.Size = new System.Drawing.Size(170, 24);
-            this.port_name.TabIndex = 2;
-            // 
-            // baund_rate
-            // 
-            this.baund_rate.Location = new System.Drawing.Point(826, 111);
-            this.baund_rate.Name = "baund_rate";
-            this.baund_rate.Size = new System.Drawing.Size(170, 22);
-            this.baund_rate.TabIndex = 3;
-            this.baund_rate.Text = "115200";
-            // 
-            // set_up
-            // 
-            this.set_up.Location = new System.Drawing.Point(1025, 51);
-            this.set_up.Name = "set_up";
-            this.set_up.Size = new System.Drawing.Size(98, 83);
-            this.set_up.TabIndex = 5;
-            this.set_up.Text = "Set Up";
-            this.set_up.UseVisualStyleBackColor = true;
-            this.set_up.Click += new System.EventHandler(this.set_up_Click);
             // 
             // utm_chart
             // 
@@ -117,143 +109,184 @@
             this.utm_chart.ChartAreas.Add(chartArea1);
             legend1.Name = "Legend1";
             this.utm_chart.Legends.Add(legend1);
-            this.utm_chart.Location = new System.Drawing.Point(12, 137);
+            this.utm_chart.Location = new System.Drawing.Point(12, 141);
             this.utm_chart.Name = "utm_chart";
             series1.ChartArea = "ChartArea1";
             series1.Legend = "Legend1";
-            series1.Name = "UTM Graph";
+            series1.Name = "UTM";
             this.utm_chart.Series.Add(series1);
-            this.utm_chart.Size = new System.Drawing.Size(1267, 495);
+            this.utm_chart.Size = new System.Drawing.Size(1267, 491);
             this.utm_chart.TabIndex = 6;
             this.utm_chart.Text = "utm chart";
             // 
-            // force_conversion_factor
-            // 
-            this.force_conversion_factor.Location = new System.Drawing.Point(537, 81);
-            this.force_conversion_factor.Name = "force_conversion_factor";
-            this.force_conversion_factor.Size = new System.Drawing.Size(154, 22);
-            this.force_conversion_factor.TabIndex = 7;
-            // 
             // A
             // 
-            this.A.Location = new System.Drawing.Point(537, 109);
+            this.A.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.A.Location = new System.Drawing.Point(93, 86);
             this.A.Name = "A";
-            this.A.Size = new System.Drawing.Size(154, 22);
+            this.A.Size = new System.Drawing.Size(197, 26);
             this.A.TabIndex = 8;
-            // 
-            // displacement_per_puls
-            // 
-            this.displacement_per_puls.Location = new System.Drawing.Point(179, 83);
-            this.displacement_per_puls.Name = "displacement_per_puls";
-            this.displacement_per_puls.Size = new System.Drawing.Size(183, 22);
-            this.displacement_per_puls.TabIndex = 9;
             // 
             // L
             // 
-            this.L.Location = new System.Drawing.Point(179, 111);
+            this.L.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.L.Location = new System.Drawing.Point(93, 46);
             this.L.Name = "L";
-            this.L.Size = new System.Drawing.Size(183, 22);
+            this.L.Size = new System.Drawing.Size(197, 26);
             this.L.TabIndex = 10;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(23, 84);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(150, 17);
-            this.label1.TabIndex = 11;
-            this.label1.Text = "Displacement Per Puls";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(121, 116);
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(12, 46);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(52, 17);
+            this.label2.Size = new System.Drawing.Size(60, 20);
             this.label2.TabIndex = 12;
             this.label2.Text = "Lenght";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(368, 87);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(163, 17);
-            this.label3.TabIndex = 13;
-            this.label3.Text = "Force Conversion Factor";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(493, 116);
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(12, 86);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(38, 17);
+            this.label4.Size = new System.Drawing.Size(44, 20);
             this.label4.TabIndex = 14;
             this.label4.Text = "Area";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(777, 84);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(34, 17);
-            this.label5.TabIndex = 15;
-            this.label5.Text = "Port";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(728, 116);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(83, 17);
-            this.label6.TabIndex = 16;
-            this.label6.Text = "Baund Rate";
             // 
             // message_label
             // 
             this.message_label.AutoSize = true;
-            this.message_label.Location = new System.Drawing.Point(23, 49);
+            this.message_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.message_label.Location = new System.Drawing.Point(431, 46);
             this.message_label.Name = "message_label";
-            this.message_label.Size = new System.Drawing.Size(69, 17);
+            this.message_label.Size = new System.Drawing.Size(427, 20);
             this.message_label.TabIndex = 17;
-            this.message_label.Text = "Message:";
+            this.message_label.Text = "Message: Please fill all data correctly. (Menu > Settiing)";
             // 
-            // guide
+            // menuStrip1
             // 
-            this.guide.AutoSize = true;
-            this.guide.Location = new System.Drawing.Point(23, 9);
-            this.guide.Name = "guide";
-            this.guide.Size = new System.Drawing.Size(408, 17);
-            this.guide.TabIndex = 18;
-            this.guide.Text = "Guide : 1. Fill up data 2. Click Set Up 3. Click Start 4. Click Stop ";
+            this.menuStrip1.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(1291, 31);
+            this.menuStrip1.TabIndex = 19;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // menuToolStripMenuItem
+            // 
+            this.menuToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripSeparator1,
+            this.settingToolStripMenuItem,
+            this.saveToolStripMenuItem,
+            this.guideToolStripMenuItem,
+            this.aboutToolStripMenuItem});
+            this.menuToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.menuToolStripMenuItem.ForeColor = System.Drawing.Color.DarkBlue;
+            this.menuToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("menuToolStripMenuItem.Image")));
+            this.menuToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.White;
+            this.menuToolStripMenuItem.Name = "menuToolStripMenuItem";
+            this.menuToolStripMenuItem.Size = new System.Drawing.Size(86, 27);
+            this.menuToolStripMenuItem.Text = "Menu";
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(178, 6);
+            // 
+            // settingToolStripMenuItem
+            // 
+            this.settingToolStripMenuItem.Name = "settingToolStripMenuItem";
+            this.settingToolStripMenuItem.Size = new System.Drawing.Size(181, 28);
+            this.settingToolStripMenuItem.Text = "Setting";
+            this.settingToolStripMenuItem.Click += new System.EventHandler(this.settingToolStripMenuItem_Click);
+            // 
+            // saveToolStripMenuItem
+            // 
+            this.saveToolStripMenuItem.ForeColor = System.Drawing.Color.DarkRed;
+            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(181, 28);
+            this.saveToolStripMenuItem.Text = "Save";
+            // 
+            // guideToolStripMenuItem
+            // 
+            this.guideToolStripMenuItem.ForeColor = System.Drawing.Color.DarkRed;
+            this.guideToolStripMenuItem.Name = "guideToolStripMenuItem";
+            this.guideToolStripMenuItem.Size = new System.Drawing.Size(181, 28);
+            this.guideToolStripMenuItem.Text = "Guide";
+            // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.ForeColor = System.Drawing.Color.DarkRed;
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(181, 28);
+            this.aboutToolStripMenuItem.Text = "About";
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.comboBox1.ForeColor = System.Drawing.Color.Blue;
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "Stress Vs Strain"});
+            this.comboBox1.Location = new System.Drawing.Point(569, 98);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(223, 28);
+            this.comboBox1.TabIndex = 20;
+            this.comboBox1.Text = " Stress Vs Strain";
+            // 
+            // graph_label
+            // 
+            this.graph_label.AutoSize = true;
+            this.graph_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.graph_label.ForeColor = System.Drawing.Color.DarkBlue;
+            this.graph_label.Location = new System.Drawing.Point(488, 101);
+            this.graph_label.Name = "graph_label";
+            this.graph_label.Size = new System.Drawing.Size(55, 20);
+            this.graph_label.TabIndex = 21;
+            this.graph_label.Text = "Graph";
+            // 
+            // camera_button
+            // 
+            this.camera_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.camera_button.ForeColor = System.Drawing.Color.Red;
+            this.camera_button.Location = new System.Drawing.Point(971, 42);
+            this.camera_button.Name = "camera_button";
+            this.camera_button.Size = new System.Drawing.Size(141, 38);
+            this.camera_button.TabIndex = 22;
+            this.camera_button.Text = "Camera";
+            this.camera_button.UseVisualStyleBackColor = true;
+            this.camera_button.Click += new System.EventHandler(this.camera_button_Click);
             // 
             // UTMForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1291, 644);
-            this.Controls.Add(this.guide);
+            this.Controls.Add(this.camera_button);
+            this.Controls.Add(this.graph_label);
+            this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.message_label);
-            this.Controls.Add(this.label6);
-            this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
             this.Controls.Add(this.L);
-            this.Controls.Add(this.displacement_per_puls);
             this.Controls.Add(this.A);
-            this.Controls.Add(this.force_conversion_factor);
             this.Controls.Add(this.utm_chart);
-            this.Controls.Add(this.set_up);
-            this.Controls.Add(this.baund_rate);
-            this.Controls.Add(this.port_name);
             this.Controls.Add(this.stop_button);
             this.Controls.Add(this.start_button);
+            this.Controls.Add(this.menuStrip1);
+            this.MainMenuStrip = this.menuStrip1;
             this.Name = "UTMForm";
             this.Text = "Universal Tesitng Machine";
             this.Load += new System.EventHandler(this.UTMForm_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.utm_chart)).EndInit();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -261,24 +294,28 @@
 
         #endregion
 
+
+        private WebCam_Capture.WebCamCapture WebCamCapture;
+        private System.Windows.Forms.PictureBox pictureBox;
+
         private System.Windows.Forms.Button start_button;
         private System.Windows.Forms.Button stop_button;
-        private System.Windows.Forms.ComboBox port_name;
-        private System.Windows.Forms.TextBox baund_rate;
-        private System.Windows.Forms.Button set_up;
         private System.Windows.Forms.DataVisualization.Charting.Chart utm_chart;
-        private System.Windows.Forms.TextBox force_conversion_factor;
         private System.Windows.Forms.TextBox A;
-        private System.Windows.Forms.TextBox displacement_per_puls;
         private System.Windows.Forms.TextBox L;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label message_label;
-        private System.Windows.Forms.Label guide;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem menuToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem settingToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem guideToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Label graph_label;
+        private System.Windows.Forms.Button camera_button;
     }
 }
 
