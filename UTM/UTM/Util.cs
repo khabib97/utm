@@ -170,8 +170,8 @@ namespace UTM
             }
         }
 
-        public static void SaveExperimentData(StringBuilder experimentData) {
-            string path = "ExperimentData-"+ DateTime.Now.ToFileTime() + "-.txt";
+        public static void SaveExperimentData(StringBuilder experimentData,String time) {
+            string path = "Experiment_Data_"+time+"/"+"RawData-" + time + ".txt";
 
             // This text is added only once to the file.
             if (!File.Exists(path))
@@ -182,6 +182,11 @@ namespace UTM
 
             // if it is not deleted.
             File.AppendAllText(path, experimentData.ToString());
+        }
+
+        public static StringBuilder LoadExperimentDataFromFile() {
+
+            return null;
         }
 
     }
