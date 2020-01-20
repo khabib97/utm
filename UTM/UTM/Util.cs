@@ -8,6 +8,8 @@ using System.Runtime.Serialization;
 using System.Drawing.Imaging;
 using log4net;
 using System.Text;
+using OfficeOpenXml.Drawing;
+using OfficeOpenXml;
 
 namespace UTM
 {
@@ -19,15 +21,15 @@ namespace UTM
         {
             message_label.ForeColor = Color.Red;
             message_label.Text = msg;
-           
+
         }
 
         public static void ShowInfo(System.Windows.Forms.Label message_label, string msg)
         {
             message_label.ForeColor = Color.Green;
             message_label.Text = msg;
-            //logger.Info(msg, "Info");
         }
+
         // if this method failed to detect port name, then user can manually update port
         public static string AutodetectArduinoPort()
         {
@@ -117,7 +119,7 @@ namespace UTM
             return data;
         }
 
-        public static String LoadSettingData()
+        public static void LoadSettingData()
         {
             Hashtable data;
             try
@@ -126,27 +128,22 @@ namespace UTM
 
                 if (data != null)
                 {
-                    Variables.displacementPerPulse = System.Convert.ToDouble(data["displacementPerPulse"]);
-                    Variables.forceConversionFactor = System.Convert.ToDouble(data["forceConversionFactor"]);
-                    Variables.restZeroDisplacement = System.Convert.ToDouble(data["restZeroDisplacement"]);
-                    Variables.restZeroDisforcement = System.Convert.ToDouble(data["restZeroDisforcement"]);
+                    Variables.displacementPerPulse = (float)System.Convert.ToDouble(data["displacementPerPulse"]);
+                    Variables.forceConversionFactor = (float)System.Convert.ToDouble(data["forceConversionFactor"]);
+                    Variables.restZeroDisplacement = (float)System.Convert.ToDouble(data["restZeroDisplacement"]);
+                    Variables.restZeroDisforcement = (float)System.Convert.ToDouble(data["restZeroDisforcement"]);
 
-                    Variables.noOfSpecieme = System.Convert.ToDouble(data["noOfSpeciemen"]);
-                    Variables.forceConversionFactor = System.Convert.ToDouble(data["specimenFractured"]);
+                    Variables.noOfSpecieme = System.Convert.ToInt16(data["noOfSpeciemen"]);
+                    Variables.fracturedLoadDrop = (float)System.Convert.ToDouble(data["specimenFractured"]);
 
                     Variables.portName = (String)data["portName"];
                     Variables.baundRate = System.Convert.ToInt32(data["baudRate"]);
                 }
-                //Variables.portName = Util.AutodetectArduinoPort();
-
-                return "Settings data load successfully";
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Setting Load Error" + ex);
-                //logger.Error(ex, "Setting Load Error:");
                 log.Error(ex);
-                return "Error : In settings data.";
             }
         }
 
@@ -158,7 +155,7 @@ namespace UTM
                 {
                     Directory.CreateDirectory("images");
                 }
-                if(image != null)
+                if (image != null)
                     image.Save("images/" + imageFileName + ".jpg", ImageFormat.Jpeg);
 
             }
@@ -170,8 +167,9 @@ namespace UTM
             }
         }
 
-        public static void SaveExperimentData(StringBuilder experimentData,String time) {
-            string path = "Experiment_Data_"+time+"/"+"RawData-" + time + ".txt";
+        public static void SaveExperimentData(StringBuilder experimentData, String time)
+        {
+            string path = "Experiment_Data_" + time + "/" + "RawData-" + time + ".txt";
 
             // This text is added only once to the file.
             if (!File.Exists(path))
@@ -184,7 +182,58 @@ namespace UTM
             File.AppendAllText(path, experimentData.ToString());
         }
 
-        public static StringBuilder LoadExperimentDataFromFile() {
+        public static void SaveChartAsImage(String picFilePath, System.Windows.Forms.DataVisualization.Charting.Chart utm_chart, String time)
+        {
+            utm_chart.SaveImage(picFilePath, System.Drawing.Imaging.ImageFormat.Jpeg);
+        }
+
+        public static void SaveGraphImage(string graphTypeName, string picFilePath, string time)
+        {
+            using (ExcelPackage ExcelPkg = new ExcelPackage())
+            {
+                ExcelWorksheet wsSheet1 = ExcelPkg.Workbook.Worksheets.Add("UMTResultOutput");
+                using (ExcelRange Rng = wsSheet1.Cells["A1:G2"])
+                {
+                    Rng.Value = "Amar Source UTM Result";
+                    Rng.Merge = true;
+                    Rng.Style.Font.Size = 14;
+                    Rng.Style.Font.Bold = true;
+                    Rng.Style.Font.Italic = false;
+                }
+
+                wsSheet1.Cells["A4"].Value = "Length ";
+                wsSheet1.Cells["B4"].Value = Variables.lenght;
+
+                wsSheet1.Cells["A5"].Value = "Area ";
+                wsSheet1.Cells["B5"].Value = Variables.area;
+
+                wsSheet1.Cells["A6:D6"].Merge = true;
+                wsSheet1.Cells["A6:D6"].Value = "Displacement Per Pulse";
+                wsSheet1.Cells["E6"].Value = Variables.displacementPerPulse;
+
+                wsSheet1.Cells["A7:D7"].Merge = true;
+                wsSheet1.Cells["A7:D7"].Value = "Force Convertion Factor";
+                wsSheet1.Cells["E7"].Value = Variables.forceConversionFactor;
+
+                wsSheet1.Cells["D9:F9"].Merge = true;
+                wsSheet1.Cells["D9:F9"].Value = graphTypeName;
+                wsSheet1.Cells["D9:F9"].Style.Font.Size = 12;
+                wsSheet1.Cells["D9:F9"].Style.Font.Bold = true;
+
+                int rowIndex = 10;
+                int colIndex = 0;
+                Image img = Image.FromFile(picFilePath);
+                ExcelPicture pic = wsSheet1.Drawings.AddPicture("UTMDataImage", img);
+                pic.SetPosition(rowIndex, 0, colIndex, 0);
+                pic.SetSize(Variables.excelImageWidth, Variables.excelImageHeight);
+                wsSheet1.Protection.IsProtected = false;
+                wsSheet1.Protection.AllowSelectLockedCells = false;
+                ExcelPkg.SaveAs(new FileInfo("Experiment_Data_" + time + "/" + "Report-" + time + ".xlsx"));
+            }
+        }
+
+        public static StringBuilder LoadExperimentDataFromFile()
+        {
 
             return null;
         }

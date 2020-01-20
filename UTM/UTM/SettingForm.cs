@@ -55,6 +55,7 @@ namespace UTM
                 Util.ShowInfo(message_label, "Message : Data save done!");
             }
             catch (Exception ex) {
+                Console.WriteLine(ex);
                 Util.ShowError(message_label, "Message : Data save error!");
             }
         }

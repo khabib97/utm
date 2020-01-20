@@ -58,7 +58,7 @@
             this.SuspendLayout();
             // 
             // WebCamCapture
-            // 
+            /*
             this.WebCamCapture.CaptureHeight = 240;
             this.WebCamCapture.CaptureWidth = 320;
             this.WebCamCapture.FrameNumber = ((ulong)(0ul));
@@ -76,7 +76,7 @@
             this.pictureBox.Size = new System.Drawing.Size(512, 512);
             this.pictureBox.TabIndex = 0;
             this.pictureBox.TabStop = false;
-            // 
+            */
             // start_button
             // 
             this.start_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));

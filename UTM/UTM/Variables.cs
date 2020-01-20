@@ -12,16 +12,25 @@ namespace UTM
         public static string portName; 
         public static int baundRate = 115200;
 
-        public static double area;
-        public static double lenght;
-        public static double displacementPerPulse;
-        public static double forceConversionFactor;
+        public static float area;
+        public static float lenght;
+        public static float displacementPerPulse;
+        public static float forceConversionFactor;
         //not clear
-        public static double restZeroDisplacement;
+        public static float restZeroDisplacement;
         //not clear
-        public static double restZeroDisforcement;
+        public static float restZeroDisforcement;
 
-        public static double noOfSpecieme = 0;
-        public static double fracturedLoadDrop = 0;
+        public static int noOfSpecieme = 0;
+        public static float fracturedLoadDrop = 0;
+
+        public static int excelImageHeight = 350;
+        public static int excelImageWidth = 700;
+
+        public enum Experiment{
+            StressVsStrain = 1,
+            LoadVsTime = 2,
+            LoadVsDisplacement =3
+        }
     }
 }
