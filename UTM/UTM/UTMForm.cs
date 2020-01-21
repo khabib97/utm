@@ -8,11 +8,7 @@ using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Collections;
 using log4net;
-
-using OfficeOpenXml;
 using System.IO;
-using OfficeOpenXml.Drawing;
-using System.Drawing;
 
 namespace UTM
 {
@@ -26,6 +22,7 @@ namespace UTM
         private List<GraphData> graphPlotDataList;
         private StringBuilder realTimeDataStorage;
         String time = null;
+        bool isCalculationDone = false;
         private int graphChooser = 0;
 
         float minY = (float)Int32.MaxValue;
@@ -130,20 +127,21 @@ namespace UTM
             }
         }
 
-        private void SetGraphAxisLabel() {
+        private void SetGraphAxisLabel()
+        {
             switch (graphChooser)
             {
                 case 1:
-                    chartArea3.AxisX.Title = "Strain(mm/mm)";
-                    chartArea3.AxisY.Title = "Stress(MPa)";
+                    chartArea.AxisX.Title = "Strain(mm/mm)";
+                    chartArea.AxisY.Title = "Stress(MPa)";
                     break;
                 case 2:
-                    chartArea3.AxisX.Title = "Time(s)";
-                    chartArea3.AxisY.Title = "Load(kN)";
+                    chartArea.AxisX.Title = "Time(s)";
+                    chartArea.AxisY.Title = "Load(kN)";
                     break;
                 case 3:
-                    chartArea3.AxisX.Title = "Displacement(mm)";
-                    chartArea3.AxisY.Title = "Load(kN)";
+                    chartArea.AxisX.Title = "Displacement(mm)";
+                    chartArea.AxisY.Title = "Load(kN)";
                     break;
             }
         }
@@ -152,6 +150,7 @@ namespace UTM
         private void start_button_Click(object sender, EventArgs e)
         {
             string errorMsg = null;
+            isCalculationDone = false;
             try
             {
                 time = DateTime.Now.ToFileTime().ToString();
@@ -185,14 +184,20 @@ namespace UTM
                 //read data from arduino
                 try
                 {
-                    //serialPort.Write("sbem");
-                    string textFile = @"C:\Users\kawse\Desktop\Experiment_Data_132236422881759293-20200119T034127Z-001\Experiment_Data_132236422881759293\RawData-132236422881759293.txt";
-                    if (File.Exists(textFile))
+                    if (Variables.selectedDataFile == null)
                     {
-                        // Read a text file line by line.
-                        string[] lines = File.ReadAllLines(textFile);
-                        foreach (string line in lines)
-                            realTimeDataStorage.Append(line + "\n");
+                        serialPort.Write("sbem");
+                    }
+                    else
+                    {
+                        string textFile = Variables.selectedDataFile;
+                        if (File.Exists(textFile))
+                        {
+                            // Read a text file line by line.
+                            string lines = File.ReadAllText(textFile);
+                            realTimeDataStorage.Clear();
+                            realTimeDataStorage.Append(lines);
+                        }
                     }
 
                     Thread.Sleep(100);
@@ -231,6 +236,7 @@ namespace UTM
         private void stop_button_Click(object sender, EventArgs e)
         {
             string errorMsg = null;
+            isCalculationDone = true;
             try
             {
                 Directory.CreateDirectory("Experiment_Data_" + time);
@@ -243,7 +249,6 @@ namespace UTM
                 catch (Exception ex)
                 {
                     errorMsg = "Message: Port closed error";
-                    //Util.ShowError(message_label, "Message: Port closed error");
                     log.Error(ex);
                 }
 
@@ -257,12 +262,15 @@ namespace UTM
                     errorMsg = "Message: Graph thread error";
                     log.Error(ex);
                 }
+
                 Util.SaveExperimentData(realTimeDataStorage, time);
                 String picFilePath = "Experiment_Data_" + time + "/" + "Image-" + time + ".jpge";
                 Util.SaveChartAsImage(picFilePath, utm_chart, time);
                 Thread.Sleep(1000);
                 Util.SaveGraphImage(((System.Collections.Generic.KeyValuePair<int, string>)(graph_combo_box.SelectedItem)).Value + " Graph", picFilePath, time);
                 Util.ShowInfo(message_label, "Message: Experiment stop successfully!");
+
+                Variables.selectedDataFile = null;
             }
             catch (Exception ex)
             {
@@ -301,14 +309,14 @@ namespace UTM
         }
 
         public void CalculateGraphData()
-        {
+        { 
             try
             {
                 string utmDataString = realTimeDataStorage.ToString();
                 string[] pairedDataArray = utmDataString.Split('\n');
 
                 float initialDisplacementValue = pairedDataArray[0] != null && !pairedDataArray[0].Equals("") ? (float)(System.Convert.ToDouble(pairedDataArray[0].Split(',')[1])) : 0;
-
+                float initialForceValue = pairedDataArray[0] != null && !pairedDataArray[0].Equals("") ? (float)(System.Convert.ToDouble(pairedDataArray[0].Split(',')[0])) : 0;
                 float displacementValueForGrouping = initialDisplacementValue;
                 float sumOfForceValueForSingleDisplacement = 0;
                 int numOfForceValue = 0;
@@ -321,7 +329,7 @@ namespace UTM
                         string[] utmDataArray = pairedData.Split(',');
                         float currentForceValue = (float)Convert.ToDouble(utmDataArray[0]);
                         float currentDisplacmentValue = (float)System.Convert.ToDouble(utmDataArray[1]);
-
+                        
                         if (displacementValueForGrouping == currentDisplacmentValue)
                         {
                             numOfForceValue++;
@@ -379,6 +387,7 @@ namespace UTM
                                 }
                             }
                         }
+
                     }
                 }
             }
@@ -386,6 +395,41 @@ namespace UTM
             {
                 Console.WriteLine(ex);
             }
+            isCalculationDone = true;
+        }
+
+        private void setting_menu_item_Click(object sender, EventArgs e)
+        {
+            SettingForm settingForm = new SettingForm();
+            settingForm.Show();
+        }
+
+        private void load_data_menu_item_Click(object sender, EventArgs e)
+        {
+            System.Windows.Forms.OpenFileDialog openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            openFileDialog1.InitialDirectory = Directory.GetParent(System.Reflection.Assembly.GetExecutingAssembly().Location).ToString();
+            openFileDialog1.DefaultExt = "txt";
+            openFileDialog1.Filter = "txt files (*.txt)|*.txt";
+            openFileDialog1.CheckFileExists = true;
+            openFileDialog1.CheckPathExists = true;
+
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                Variables.selectedDataFile = openFileDialog1.FileName;
+            }
+
+
+
+        }
+
+        private void guide_menu_item_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void about_menu_item_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

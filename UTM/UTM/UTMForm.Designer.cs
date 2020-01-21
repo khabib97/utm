@@ -28,10 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UTMForm));
+            chartArea = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend6 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series6 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.WebCamCapture = new WebCam_Capture.WebCamCapture();
             this.pictureBox = new System.Windows.Forms.PictureBox();
             this.start_button = new System.Windows.Forms.Button();
@@ -43,40 +42,36 @@
             this.label4 = new System.Windows.Forms.Label();
             this.message_label = new System.Windows.Forms.Label();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.menuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.settingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.guideToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.setting_menu_item = new System.Windows.Forms.ToolStripMenuItem();
+            this.load_data_menu_item = new System.Windows.Forms.ToolStripMenuItem();
+            this.guide_menu_item = new System.Windows.Forms.ToolStripMenuItem();
+            this.about_menu_item = new System.Windows.Forms.ToolStripMenuItem();
             this.graph_combo_box = new System.Windows.Forms.ComboBox();
             this.graph_label = new System.Windows.Forms.Label();
-            //this.camera_button = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.utm_chart)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // WebCamCapture
-            /*
+            // 
             this.WebCamCapture.CaptureHeight = 240;
             this.WebCamCapture.CaptureWidth = 320;
             this.WebCamCapture.FrameNumber = ((ulong)(0ul));
-            this.WebCamCapture.Location = new System.Drawing.Point(17, 17);
+            this.WebCamCapture.Location = new System.Drawing.Point(0, 0);
             this.WebCamCapture.Name = "WebCamCapture";
             this.WebCamCapture.Size = new System.Drawing.Size(342, 252);
             this.WebCamCapture.TabIndex = 0;
             this.WebCamCapture.TimeToCapture_milliseconds = 100;
-            this.WebCamCapture.ImageCaptured += new WebCam_Capture.WebCamCapture.WebCamEventHandler(this.WebCamCapture_ImageCaptured);
             // 
             // pictureBox
             // 
-            this.pictureBox.Location = new System.Drawing.Point(6, 6);
+            this.pictureBox.Location = new System.Drawing.Point(0, 0);
             this.pictureBox.Name = "pictureBox";
-            this.pictureBox.Size = new System.Drawing.Size(512, 512);
+            this.pictureBox.Size = new System.Drawing.Size(100, 50);
             this.pictureBox.TabIndex = 0;
             this.pictureBox.TabStop = false;
-            */
+            // 
             // start_button
             // 
             this.start_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -103,16 +98,16 @@
             // 
             // utm_chart
             // 
-            chartArea3.Name = "ChartArea1";
-            this.utm_chart.ChartAreas.Add(chartArea3);
-            legend3.Name = "Legend1";
-            this.utm_chart.Legends.Add(legend3);
+            chartArea.Name = "ChartArea1";
+            this.utm_chart.ChartAreas.Add(chartArea);
+            legend6.Name = "Legend1";
+            this.utm_chart.Legends.Add(legend6);
             this.utm_chart.Location = new System.Drawing.Point(12, 141);
             this.utm_chart.Name = "utm_chart";
-            series3.ChartArea = "ChartArea1";
-            series3.Legend = "Legend1";
-            series3.Name = "UTM";
-            this.utm_chart.Series.Add(series3);
+            series6.ChartArea = "ChartArea1";
+            series6.Legend = "Legend1";
+            series6.Name = "UTM";
+            this.utm_chart.Series.Add(series6);
             this.utm_chart.Size = new System.Drawing.Size(1267, 491);
             this.utm_chart.TabIndex = 6;
             this.utm_chart.Text = "utm chart";
@@ -159,70 +154,64 @@
             this.message_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.message_label.Location = new System.Drawing.Point(431, 46);
             this.message_label.Name = "message_label";
-            this.message_label.Size = new System.Drawing.Size(427, 20);
+            this.message_label.Size = new System.Drawing.Size(0, 20);
             this.message_label.TabIndex = 17;
-            this.message_label.Text = "Message: Please fill all data correctly. (Menu > Settiing)";
             // 
             // menuStrip1
             // 
-            this.menuStrip1.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.menuStrip1.BackColor = System.Drawing.SystemColors.ControlLight;
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.menuToolStripMenuItem});
+            this.setting_menu_item,
+            this.load_data_menu_item,
+            this.guide_menu_item,
+            this.about_menu_item});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1291, 31);
+            this.menuStrip1.Size = new System.Drawing.Size(1291, 35);
             this.menuStrip1.TabIndex = 19;
             this.menuStrip1.Text = "menuStrip1";
             // 
-            // menuToolStripMenuItem
+            // setting_menu_item
             // 
-            this.menuToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripSeparator1,
-            this.settingToolStripMenuItem,
-            this.saveToolStripMenuItem,
-            this.guideToolStripMenuItem,
-            this.aboutToolStripMenuItem});
-            this.menuToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.menuToolStripMenuItem.ForeColor = System.Drawing.Color.DarkBlue;
-            this.menuToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("menuToolStripMenuItem.Image")));
-            this.menuToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.White;
-            this.menuToolStripMenuItem.Name = "menuToolStripMenuItem";
-            this.menuToolStripMenuItem.Size = new System.Drawing.Size(86, 27);
-            this.menuToolStripMenuItem.Text = "Menu";
+            this.setting_menu_item.BackColor = System.Drawing.SystemColors.AppWorkspace;
+            this.setting_menu_item.Font = new System.Drawing.Font("Segoe UI", 11F);
+            this.setting_menu_item.Margin = new System.Windows.Forms.Padding(1);
+            this.setting_menu_item.Name = "setting_menu_item";
+            this.setting_menu_item.Size = new System.Drawing.Size(83, 29);
+            this.setting_menu_item.Text = "Setting";
+            this.setting_menu_item.Click += new System.EventHandler(this.setting_menu_item_Click);
             // 
-            // toolStripSeparator1
+            // load_data_menu_item
             // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(137, 6);
+            this.load_data_menu_item.BackColor = System.Drawing.SystemColors.AppWorkspace;
+            this.load_data_menu_item.Font = new System.Drawing.Font("Segoe UI", 11F);
+            this.load_data_menu_item.Margin = new System.Windows.Forms.Padding(1);
+            this.load_data_menu_item.Name = "load_data_menu_item";
+            this.load_data_menu_item.Size = new System.Drawing.Size(109, 29);
+            this.load_data_menu_item.Text = "Load Data";
+            this.load_data_menu_item.Click += new System.EventHandler(this.load_data_menu_item_Click);
             // 
-            // settingToolStripMenuItem
+            // guide_menu_item
             // 
-            this.settingToolStripMenuItem.Name = "settingToolStripMenuItem";
-            this.settingToolStripMenuItem.Size = new System.Drawing.Size(140, 28);
-            this.settingToolStripMenuItem.Text = "Setting";
-            this.settingToolStripMenuItem.Click += new System.EventHandler(this.settingToolStripMenuItem_Click);
+            this.guide_menu_item.BackColor = System.Drawing.SystemColors.AppWorkspace;
+            this.guide_menu_item.Font = new System.Drawing.Font("Segoe UI", 11F);
+            this.guide_menu_item.Margin = new System.Windows.Forms.Padding(1);
+            this.guide_menu_item.Name = "guide_menu_item";
+            this.guide_menu_item.Size = new System.Drawing.Size(74, 29);
+            this.guide_menu_item.Text = "Guide";
+            this.guide_menu_item.Click += new System.EventHandler(this.guide_menu_item_Click);
             // 
-            // saveToolStripMenuItem
+            // about_menu_item
             // 
-            this.saveToolStripMenuItem.ForeColor = System.Drawing.Color.DarkRed;
-            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(140, 28);
-            this.saveToolStripMenuItem.Text = "Save";
-            // 
-            // guideToolStripMenuItem
-            // 
-            this.guideToolStripMenuItem.ForeColor = System.Drawing.Color.DarkRed;
-            this.guideToolStripMenuItem.Name = "guideToolStripMenuItem";
-            this.guideToolStripMenuItem.Size = new System.Drawing.Size(140, 28);
-            this.guideToolStripMenuItem.Text = "Guide";
-            // 
-            // aboutToolStripMenuItem
-            // 
-            this.aboutToolStripMenuItem.ForeColor = System.Drawing.Color.DarkRed;
-            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(140, 28);
-            this.aboutToolStripMenuItem.Text = "About";
+            this.about_menu_item.BackColor = System.Drawing.SystemColors.AppWorkspace;
+            this.about_menu_item.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.about_menu_item.Font = new System.Drawing.Font("Segoe UI", 11F);
+            this.about_menu_item.Margin = new System.Windows.Forms.Padding(1);
+            this.about_menu_item.Name = "about_menu_item";
+            this.about_menu_item.Size = new System.Drawing.Size(75, 29);
+            this.about_menu_item.Text = "About";
+            this.about_menu_item.Click += new System.EventHandler(this.about_menu_item_Click);
             // 
             // graph_combo_box
             // 
@@ -245,24 +234,11 @@
             this.graph_label.TabIndex = 21;
             this.graph_label.Text = "Graph";
             // 
-            // camera_button
-            /* 
-            this.camera_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.camera_button.ForeColor = System.Drawing.Color.Red;
-            this.camera_button.Location = new System.Drawing.Point(971, 42);
-            this.camera_button.Name = "camera_button";
-            this.camera_button.Size = new System.Drawing.Size(141, 38);
-            this.camera_button.TabIndex = 22;
-            this.camera_button.Text = "Camera";
-            this.camera_button.UseVisualStyleBackColor = true;
-            this.camera_button.Click += new System.EventHandler(this.camera_button_Click);
-            */ 
             // UTMForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1291, 644);
-            //this.Controls.Add(this.camera_button);
             this.Controls.Add(this.graph_label);
             this.Controls.Add(this.graph_combo_box);
             this.Controls.Add(this.message_label);
@@ -289,7 +265,7 @@
 
         #endregion
 
-        private System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3;
+        private System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea;
         private WebCam_Capture.WebCamCapture WebCamCapture;
         private System.Windows.Forms.PictureBox pictureBox;
 
@@ -302,14 +278,12 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label message_label;
         private System.Windows.Forms.MenuStrip menuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem menuToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripMenuItem settingToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem guideToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ComboBox graph_combo_box;
         private System.Windows.Forms.Label graph_label;
+        private System.Windows.Forms.ToolStripMenuItem setting_menu_item;
+        private System.Windows.Forms.ToolStripMenuItem load_data_menu_item;
+        private System.Windows.Forms.ToolStripMenuItem guide_menu_item;
+        private System.Windows.Forms.ToolStripMenuItem about_menu_item;
         //private System.Windows.Forms.Button camera_button;
     }
 }

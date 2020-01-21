@@ -276,8 +276,8 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Name = "SettingForm";
-            this.Text = "SettingForm";
+            this.Name = "Setting";
+            this.Text = "Setting";
             this.ResumeLayout(false);
             this.PerformLayout();
 

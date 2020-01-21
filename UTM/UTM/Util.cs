@@ -177,9 +177,9 @@ namespace UTM
                 // Create a file to write to.
                 File.WriteAllText(path, experimentData.ToString());
             }
-
+            experimentData.Clear();
             // if it is not deleted.
-            File.AppendAllText(path, experimentData.ToString());
+            //File.AppendAllText(path, experimentData.ToString());
         }
 
         public static void SaveChartAsImage(String picFilePath, System.Windows.Forms.DataVisualization.Charting.Chart utm_chart, String time)

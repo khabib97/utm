@@ -32,5 +32,7 @@ namespace UTM
             LoadVsTime = 2,
             LoadVsDisplacement =3
         }
+
+        public static string selectedDataFile = null;
     }
 }
