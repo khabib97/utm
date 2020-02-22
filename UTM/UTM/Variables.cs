@@ -33,6 +33,16 @@ namespace UTM
             LoadVsDisplacement =3
         }
 
+        public static int points = 50;
+        public static int degree = 3;
+        public static int filter = 1;
+
+        public enum Filtering
+        {
+            AverageWithSavitzkyGolay = 1,
+            SavitzkyGolay = 2
+        }
+
         public static string selectedDataFile = null;
     }
 }

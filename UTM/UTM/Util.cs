@@ -26,6 +26,7 @@ namespace UTM
 
         public static void ShowInfo(System.Windows.Forms.Label message_label, string msg)
         {
+            message_label.Text = "";
             message_label.ForeColor = Color.Green;
             message_label.Text = msg;
         }
@@ -138,6 +139,12 @@ namespace UTM
 
                     Variables.portName = (String)data["portName"];
                     Variables.baundRate = System.Convert.ToInt32(data["baudRate"]);
+
+
+                    Variables.filter = System.Convert.ToInt16(data["filter"]);
+                    Variables.points = System.Convert.ToInt16(data["points"]);
+                    Variables.degree = System.Convert.ToInt16(data["degree"]);
+
                 }
             }
             catch (Exception ex)

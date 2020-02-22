@@ -9,6 +9,9 @@ using System.Windows.Forms.DataVisualization.Charting;
 using System.Collections;
 using log4net;
 using System.IO;
+//using MathNet.Filtering;
+using Filtering;
+using System.Threading.Tasks;
 
 namespace UTM
 {
@@ -22,8 +25,13 @@ namespace UTM
         private List<GraphData> graphPlotDataList;
         private StringBuilder realTimeDataStorage;
         String time = null;
-        bool isCalculationDone = false;
+        //bool isCalculationDone = false;
         private int graphChooser = 0;
+
+        private double[] _x;
+        private double[] _y;
+        //DoubleVector graphData = null;
+
 
         float minY = (float)Int32.MaxValue;
         //Set Up serial communication
@@ -90,13 +98,15 @@ namespace UTM
             while (true)
             {
                 graphPlotDataList = new List<GraphData>();
-                CalculateGraphData();
+                if (Variables.filter == (int)Variables.Filtering.AverageWithSavitzkyGolay) CalculateGraphData();
+                else iCalculateGraphData();
                 if (utm_chart.IsHandleCreated)
                     this.Invoke((MethodInvoker)delegate { UpdateUTMChart(); });
 
                 Thread.Sleep(1000);
             }
         }
+
 
         private void UpdateUTMChart()
         {
@@ -149,8 +159,9 @@ namespace UTM
         //invoke when start_button_click
         private void start_button_Click(object sender, EventArgs e)
         {
+            Util.ShowInfo(message_label, "Message: Experiment Running...");
             string errorMsg = null;
-            isCalculationDone = false;
+            //isCalculationDone = false;
             try
             {
                 time = DateTime.Now.ToFileTime().ToString();
@@ -164,28 +175,30 @@ namespace UTM
 
                 //Load previoulsy save data
                 Util.LoadSettingData();
+                LoadDataFromSettingForm();
 
-                try
-                {
-                    //old code neet to replace
-                    LoadDataFromSettingForm();
-                    //init arduino
-                    SetUpComPort();
-
-                    Thread.Sleep(1000);
-                }
-                catch (Exception ex)
-                {
-                    errorMsg = "Message: Please set up form with correct data";
-                    log.Error(ex);
-                    throw;
-                }
 
                 //read data from arduino
                 try
                 {
                     if (Variables.selectedDataFile == null)
                     {
+                        try
+                        {
+                            //old code neet to replace
+                            
+                            //init arduino
+                            SetUpComPort();
+
+                            Thread.Sleep(1000);
+                        }
+                        catch (Exception ex)
+                        {
+                            errorMsg = "Message: Please set up form with correct data";
+                            log.Error(ex);
+                            throw;
+                        }
+
                         serialPort.Write("sbem");
                     }
                     else
@@ -222,7 +235,7 @@ namespace UTM
                     log.Error(ex);
                     throw;
                 }
-                Util.ShowInfo(message_label, "Message: Experiment Running...");
+                
             }
             catch (Exception ex)
             {
@@ -235,25 +248,33 @@ namespace UTM
         //invoke when stop_button_click
         private void stop_button_Click(object sender, EventArgs e)
         {
+            Thread.Sleep(1000);
             string errorMsg = null;
-            isCalculationDone = true;
+
             try
             {
                 Directory.CreateDirectory("Experiment_Data_" + time);
+                if (Variables.selectedDataFile == null)
+                {
+                    try
+                    {
+                        serialPort.Write("sxem");
+                        serialPort.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        errorMsg = "Message: Port closed error";
+                        log.Error(ex);
+                        throw;
+                    }
+                }
 
                 try
                 {
-                    serialPort.Write("sxem");
-                    serialPort.Close();
-                }
-                catch (Exception ex)
-                {
-                    errorMsg = "Message: Port closed error";
-                    log.Error(ex);
-                }
+                    Thread.Sleep(1000);
+                    ReFilteringData();
 
-                try
-                {
+                    
                     utmGraphThread.Abort();
                     Thread.Sleep(1000);
                 }
@@ -261,15 +282,12 @@ namespace UTM
                 {
                     errorMsg = "Message: Graph thread error";
                     log.Error(ex);
+                    throw;
                 }
 
-                Util.SaveExperimentData(realTimeDataStorage, time);
-                String picFilePath = "Experiment_Data_" + time + "/" + "Image-" + time + ".jpge";
-                Util.SaveChartAsImage(picFilePath, utm_chart, time);
-                Thread.Sleep(1000);
-                Util.SaveGraphImage(((System.Collections.Generic.KeyValuePair<int, string>)(graph_combo_box.SelectedItem)).Value + " Graph", picFilePath, time);
-                Util.ShowInfo(message_label, "Message: Experiment stop successfully!");
+                
 
+                realTimeDataStorage.Clear();
                 Variables.selectedDataFile = null;
             }
             catch (Exception ex)
@@ -277,6 +295,15 @@ namespace UTM
                 Console.WriteLine(ex);
                 Util.ShowError(message_label, errorMsg);
             }
+        }
+
+        private void SaveExperiment() {
+            Util.SaveExperimentData(realTimeDataStorage, time);
+            String picFilePath = "Experiment_Data_" + time + "/" + "Image-" + time + ".jpge";
+            Util.SaveChartAsImage(picFilePath, utm_chart, time);
+            Thread.Sleep(1000);
+            Util.SaveGraphImage(((System.Collections.Generic.KeyValuePair<int, string>)(graph_combo_box.SelectedItem)).Value + " Graph", picFilePath, time);
+            Util.ShowInfo(message_label, "Message: Stop successfully!");
         }
 
         private void LoadDataFromSettingForm()
@@ -309,7 +336,7 @@ namespace UTM
         }
 
         public void CalculateGraphData()
-        { 
+        {
             try
             {
                 string utmDataString = realTimeDataStorage.ToString();
@@ -329,7 +356,7 @@ namespace UTM
                         string[] utmDataArray = pairedData.Split(',');
                         float currentForceValue = (float)Convert.ToDouble(utmDataArray[0]);
                         float currentDisplacmentValue = (float)System.Convert.ToDouble(utmDataArray[1]);
-                        
+
                         if (displacementValueForGrouping == currentDisplacmentValue)
                         {
                             numOfForceValue++;
@@ -395,7 +422,101 @@ namespace UTM
             {
                 Console.WriteLine(ex);
             }
-            isCalculationDone = true;
+            //isCalculationDone = true;
+        }
+
+        public void iCalculateGraphData()
+        {
+            try
+            {
+                string utmDataString = realTimeDataStorage.ToString();
+                string[] pairedDataArray = utmDataString.Split('\n');
+
+                float initialDisplacementValue = pairedDataArray[0] != null && !pairedDataArray[0].Equals("") ? (float)(System.Convert.ToDouble(pairedDataArray[0].Split(',')[1])) : 0;
+
+                foreach (string pairedData in pairedDataArray)
+                {
+                    //check blank string 
+                    if (pairedData != "")
+                    {
+                        string[] utmDataArray = pairedData.Split(',');
+                        float currentForceValue = (float)Convert.ToDouble(utmDataArray[0]);
+                        float currentDisplacmentValue = (float)System.Convert.ToDouble(utmDataArray[1]);
+
+                        float displacement = Math.Abs(currentDisplacmentValue - initialDisplacementValue) * Variables.displacementPerPulse;
+                        float force = (float)currentForceValue /*firstValue*/ * Variables.forceConversionFactor;
+
+
+                        float X = 0;
+                        float Y = 0;
+
+                        switch (graphChooser)
+                        {
+                            case 1:
+                                X = displacement / Variables.lenght;
+                                Y = force / Variables.area;
+                                break;
+                            case 2:
+                                X = 0;
+                                Y = force;
+                                break;
+                            case 3:
+                                X = displacement;
+                                Y = force;
+                                break;
+                        }
+
+                        //ignore negative value for better ploting
+                        if (X >= 0 || Y >= 0)
+                        {
+                            if (Y <= minY)
+                                minY = Y;
+
+                            Y = Y - minY;
+
+                            GraphData gData = new GraphData();
+
+                            gData.x = X;
+                            gData.y = Y;
+                            gData.displacementSensorReading = currentDisplacmentValue;
+                            gData.forceSensorReading = currentForceValue;
+
+                            graphPlotDataList.Add(gData);
+
+
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+            //isCalculationDone = true;
+        }
+
+        private void ReFilteringData()
+        {
+            int  lenght = graphPlotDataList.Count;
+            _y = new double[lenght];
+            int index = 0;
+            foreach (GraphData gData in graphPlotDataList)
+            {
+                _y[index] = gData.y;
+                index++;
+            }
+            _y = DataAnalysis(_y);
+            index = 0;
+            foreach (GraphData gData in graphPlotDataList)
+            {
+                gData.y = (float)_y[index];
+                index++;
+            }
+        }
+        private double[] DataAnalysis(double[] data)
+        {
+            SavitzkyGolayFilter filter = new SavitzkyGolayFilter(101, 3);
+            return filter.Process(data);
         }
 
         private void setting_menu_item_Click(object sender, EventArgs e)
@@ -406,16 +527,16 @@ namespace UTM
 
         private void load_data_menu_item_Click(object sender, EventArgs e)
         {
-            System.Windows.Forms.OpenFileDialog openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            openFileDialog1.InitialDirectory = Directory.GetParent(System.Reflection.Assembly.GetExecutingAssembly().Location).ToString();
-            openFileDialog1.DefaultExt = "txt";
-            openFileDialog1.Filter = "txt files (*.txt)|*.txt";
-            openFileDialog1.CheckFileExists = true;
-            openFileDialog1.CheckPathExists = true;
+            System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            openFileDialog.InitialDirectory = Directory.GetParent(System.Reflection.Assembly.GetExecutingAssembly().Location).ToString();
+            openFileDialog.DefaultExt = "txt";
+            openFileDialog.Filter = "txt files (*.txt)|*.txt";
+            openFileDialog.CheckFileExists = true;
+            openFileDialog.CheckPathExists = true;
 
-            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                Variables.selectedDataFile = openFileDialog1.FileName;
+                Variables.selectedDataFile = openFileDialog.FileName;
             }
 
 

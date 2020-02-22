@@ -49,6 +49,13 @@
             this.save_button_setting_page = new System.Windows.Forms.Button();
             this.baud_rate = new System.Windows.Forms.TextBox();
             this.message_label = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.degree = new System.Windows.Forms.TextBox();
+            this.numberOfPoints = new System.Windows.Forms.TextBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.filtering_combo_box = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // label1
@@ -100,7 +107,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(41, 198);
+            this.label6.Location = new System.Drawing.Point(41, 194);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(118, 17);
             this.label6.TabIndex = 5;
@@ -109,7 +116,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(41, 227);
+            this.label7.Location = new System.Drawing.Point(41, 223);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(250, 17);
             this.label7.TabIndex = 6;
@@ -119,7 +126,7 @@
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(12, 169);
+            this.label8.Location = new System.Drawing.Point(12, 165);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(91, 20);
             this.label8.TabIndex = 7;
@@ -129,7 +136,7 @@
             // 
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(12, 261);
+            this.label9.Location = new System.Drawing.Point(12, 257);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(112, 20);
             this.label9.TabIndex = 8;
@@ -138,7 +145,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(41, 299);
+            this.label10.Location = new System.Drawing.Point(41, 295);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(60, 17);
             this.label10.TabIndex = 9;
@@ -147,7 +154,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(41, 329);
+            this.label11.Location = new System.Drawing.Point(41, 325);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(79, 17);
             this.label11.TabIndex = 10;
@@ -159,7 +166,7 @@
             this.correction_factor_displacement.Name = "correction_factor_displacement";
             this.correction_factor_displacement.Size = new System.Drawing.Size(264, 22);
             this.correction_factor_displacement.TabIndex = 11;
-            this.correction_factor_displacement.Text = "0.0";
+            this.correction_factor_displacement.Text = "0";
             // 
             // displacement_reset_zero
             // 
@@ -167,7 +174,7 @@
             this.displacement_reset_zero.Name = "displacement_reset_zero";
             this.displacement_reset_zero.Size = new System.Drawing.Size(264, 22);
             this.displacement_reset_zero.TabIndex = 12;
-            this.displacement_reset_zero.Text = "0.0";
+            this.displacement_reset_zero.Text = "0";
             // 
             // force_factor_load
             // 
@@ -175,7 +182,7 @@
             this.force_factor_load.Name = "force_factor_load";
             this.force_factor_load.Size = new System.Drawing.Size(264, 22);
             this.force_factor_load.TabIndex = 13;
-            this.force_factor_load.Text = "0.0";
+            this.force_factor_load.Text = "0";
             // 
             // deformetion_reset_zero
             // 
@@ -183,23 +190,23 @@
             this.deformetion_reset_zero.Name = "deformetion_reset_zero";
             this.deformetion_reset_zero.Size = new System.Drawing.Size(264, 22);
             this.deformetion_reset_zero.TabIndex = 14;
-            this.deformetion_reset_zero.Text = "0.0";
+            this.deformetion_reset_zero.Text = "0";
             // 
             // no_of_speciemen
             // 
-            this.no_of_speciemen.Location = new System.Drawing.Point(417, 193);
+            this.no_of_speciemen.Location = new System.Drawing.Point(417, 189);
             this.no_of_speciemen.Name = "no_of_speciemen";
             this.no_of_speciemen.Size = new System.Drawing.Size(264, 22);
             this.no_of_speciemen.TabIndex = 15;
-            this.no_of_speciemen.Text = "0.0";
+            this.no_of_speciemen.Text = "0";
             // 
             // specimen_fractured
             // 
-            this.specimen_fractured.Location = new System.Drawing.Point(417, 227);
+            this.specimen_fractured.Location = new System.Drawing.Point(417, 223);
             this.specimen_fractured.Name = "specimen_fractured";
             this.specimen_fractured.Size = new System.Drawing.Size(264, 22);
             this.specimen_fractured.TabIndex = 16;
-            this.specimen_fractured.Text = "0.0";
+            this.specimen_fractured.Text = "0";
             // 
             // port_name
             // 
@@ -217,7 +224,7 @@
             "COM10",
             "COM11",
             "COM12"});
-            this.port_name.Location = new System.Drawing.Point(417, 281);
+            this.port_name.Location = new System.Drawing.Point(417, 277);
             this.port_name.Name = "port_name";
             this.port_name.Size = new System.Drawing.Size(264, 24);
             this.port_name.TabIndex = 17;
@@ -225,7 +232,7 @@
             // save_button_setting_page
             // 
             this.save_button_setting_page.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.save_button_setting_page.Location = new System.Drawing.Point(210, 400);
+            this.save_button_setting_page.Location = new System.Drawing.Point(221, 497);
             this.save_button_setting_page.Name = "save_button_setting_page";
             this.save_button_setting_page.Size = new System.Drawing.Size(333, 53);
             this.save_button_setting_page.TabIndex = 19;
@@ -235,7 +242,7 @@
             // 
             // baud_rate
             // 
-            this.baud_rate.Location = new System.Drawing.Point(417, 323);
+            this.baud_rate.Location = new System.Drawing.Point(417, 319);
             this.baud_rate.Name = "baud_rate";
             this.baud_rate.Size = new System.Drawing.Size(264, 22);
             this.baud_rate.TabIndex = 21;
@@ -244,17 +251,88 @@
             // message_label
             // 
             this.message_label.AutoSize = true;
-            this.message_label.Location = new System.Drawing.Point(16, 366);
+            this.message_label.Location = new System.Drawing.Point(12, 472);
             this.message_label.Name = "message_label";
             this.message_label.Size = new System.Drawing.Size(77, 17);
             this.message_label.TabIndex = 22;
             this.message_label.Text = "Message : ";
             // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label12.Location = new System.Drawing.Point(12, 351);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(53, 20);
+            this.label12.TabIndex = 23;
+            this.label12.Text = "Filter";
+            // 
+            // degree
+            // 
+            this.degree.Location = new System.Drawing.Point(419, 441);
+            this.degree.Name = "degree";
+            this.degree.Size = new System.Drawing.Size(264, 22);
+            this.degree.TabIndex = 28;
+            this.degree.Text = "3";
+            // 
+            // numberOfPoints
+            // 
+            this.numberOfPoints.Location = new System.Drawing.Point(419, 409);
+            this.numberOfPoints.Name = "numberOfPoints";
+            this.numberOfPoints.Size = new System.Drawing.Size(264, 22);
+            this.numberOfPoints.TabIndex = 27;
+            this.numberOfPoints.Text = "50";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(43, 379);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(62, 17);
+            this.label13.TabIndex = 26;
+            this.label13.Text = "Filtering ";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(43, 441);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(55, 17);
+            this.label14.TabIndex = 25;
+            this.label14.Text = "Degree";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(43, 409);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(116, 17);
+            this.label15.TabIndex = 24;
+            this.label15.Text = "Number of points";
+            // 
+            // filtering_combo_box
+            // 
+            this.filtering_combo_box.FormattingEnabled = true;
+            this.filtering_combo_box.Items.AddRange(new object[] {
+            "Average & Savitzky-Golay",
+            "Savitzky-Golay"});
+            this.filtering_combo_box.Location = new System.Drawing.Point(418, 374);
+            this.filtering_combo_box.Name = "filtering_combo_box";
+            this.filtering_combo_box.Size = new System.Drawing.Size(264, 24);
+            this.filtering_combo_box.TabIndex = 29;
+            // 
             // SettingForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(785, 491);
+            this.ClientSize = new System.Drawing.Size(813, 557);
+            this.Controls.Add(this.filtering_combo_box);
+            this.Controls.Add(this.degree);
+            this.Controls.Add(this.numberOfPoints);
+            this.Controls.Add(this.label13);
+            this.Controls.Add(this.label14);
+            this.Controls.Add(this.label15);
+            this.Controls.Add(this.label12);
             this.Controls.Add(this.message_label);
             this.Controls.Add(this.baud_rate);
             this.Controls.Add(this.save_button_setting_page);
@@ -276,8 +354,9 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Name = "Setting";
+            this.Name = "SettingForm";
             this.Text = "Setting";
+            this.Load += new System.EventHandler(this.SettingForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -306,5 +385,12 @@
         private System.Windows.Forms.Button save_button_setting_page;
         private System.Windows.Forms.TextBox baud_rate;
         private System.Windows.Forms.Label message_label;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.TextBox degree;
+        private System.Windows.Forms.TextBox numberOfPoints;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.ComboBox filtering_combo_box;
     }
 }
