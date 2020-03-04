@@ -12,7 +12,7 @@ namespace UTM
         public static string portName; 
         public static int baundRate = 115200;
 
-        public static float area;
+        public static float diameter;
         public static float lenght;
         public static float displacementPerPulse;
         public static float forceConversionFactor;
@@ -20,6 +20,7 @@ namespace UTM
         public static float restZeroDisplacement;
         //not clear
         public static float restZeroDisforcement;
+        public static double uts = 0;
 
         public static int noOfSpecieme = 0;
         public static float fracturedLoadDrop = 0;

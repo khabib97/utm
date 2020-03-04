@@ -7,10 +7,11 @@ namespace UTM
 {
     public class GraphData
     {
-        public float x {  get; set; }
-        public float y {  get; set; }
-        public float displacementSensorReading { get; set; }
-        public float forceSensorReading { get; set; }
+        public double x {  get; set; }
+        public double y {  get; set; }
+        public double displacementSensorReading { get; set; }
+        public double forceSensorReading { get; set; }
         public long timer { get; set; }
+        public double displacement { get; set; }
     }
 }
