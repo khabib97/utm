@@ -39,6 +39,8 @@ namespace UTM
         //all data, string format
         private StringBuilder realTimeDataStorage;
 
+        private int minYIndex = 0;
+
         //area calculate form diameter = 0.25*3.1416*diameter^2
         private double area;
         //for differnet file saving
@@ -104,12 +106,8 @@ namespace UTM
 
                 LoadGraphType();
                 //graph plot type
-                
-                utm_chart.Series[0].ChartType = SeriesChartType.Line;
-                //utm_chart.Series[1].ChartType = SeriesChartType.Line;
 
-                //utm_chart.ChartAreas[0].AxisY.Maximum = Double.NaN;
-                //utm_chart.ChartAreas[0].AxisX.Maximum = Double.NaN;
+                utm_chart.Series[0].ChartType = SeriesChartType.Line;
                 //reload saved data
                 LoadMaterialData();
             }
@@ -190,7 +188,7 @@ namespace UTM
             }
         }
 
- 
+
 
         private void SaveExperiment()
         {
@@ -204,7 +202,7 @@ namespace UTM
             Util.SaveChartAsImage(picFilePath, utm_chart, time);
             Thread.Sleep(1000);
             Util.SaveGraphImage(((System.Collections.Generic.KeyValuePair<int, string>)(graph_combo_box.SelectedItem)).Value + " Graph", picFilePath, time);
-            
+
             Util.ShowInfo(message_label, "Message: Stop successfully!");
             Variables.selectedDataFile = null;
         }
@@ -274,19 +272,26 @@ namespace UTM
             }
         }
 
+        //This two methods are quite same. we will marge them soon.
         public void CalculateGraphDataWithAvg()
         {
             try
             {
+                double localMinDisplacement = Double.MaxValue;
+                double localMinForce = Double.MaxValue;
+
                 string utmDataString = realTimeDataStorage.ToString();
                 string[] pairedDataArray = utmDataString.Split('\n');
 
                 initialDisplacementValue = PairedDataArrayToDisplacementValue(pairedDataArray);
-                double initialForceValue = pairedDataArray[0] != null && !pairedDataArray[0].Equals("") ? (float)(System.Convert.ToDouble(pairedDataArray[0].Split(',')[0])) : 0;
                 double displacementValueForGrouping = initialDisplacementValue;
+
+                double initialForceValue = pairedDataArray[0] != null && !pairedDataArray[0].Equals("") ? (float)(System.Convert.ToDouble(pairedDataArray[0].Split(',')[0])) : 0;
                 double sumOfForceValueForSingleDisplacement = 0;
                 int numOfForceValue = 0;
+
                 GraphData gData = null;
+
                 foreach (string pairedData in pairedDataArray)
                 {
                     //check blank string 
@@ -312,11 +317,26 @@ namespace UTM
                             double X = 0;
                             double Y = 0;
 
+                            if (displacement < localMinDisplacement)
+                            {
+                                localMinDisplacement = displacement;
+                            }
+                            if (outputForce < localMinForce)
+                            {
+
+                                localMinForce = outputForce;
+                            }
+
+                            displacement = displacement - localMinDisplacement;
+                            outputForce = outputForce - localMinForce;
+
                             GraphDataSelectorForDrawingGraph(out X, out Y, displacement, outputForce);
 
                             //ignore negative value for better ploting
-                            if (Y >= 0)
+                            if (Y >= 0 || X >= 0)
                             {
+
+
                                 gData = new GraphData();
                                 gData.x = X;
                                 gData.y = Y;
@@ -345,6 +365,9 @@ namespace UTM
         {
             try
             {
+                double localMinDisplacement = Double.MaxValue;
+                double localMinForce = Double.MaxValue;
+
                 string utmDataString = realTimeDataStorage.ToString();
                 string[] pairedDataArray = utmDataString.Split('\n');
 
@@ -365,6 +388,19 @@ namespace UTM
 
                         double X = 0;
                         double Y = 0;
+
+                        if (displacement < localMinDisplacement)
+                        {
+                            localMinDisplacement = displacement;
+                        }
+                        if (force < localMinForce)
+                        {
+
+                            localMinForce = force;
+                        }
+
+                        displacement = displacement - localMinDisplacement;
+                        force = force - localMinForce;
 
                         GraphDataSelectorForDrawingGraph(out X, out Y, displacement, force);
 
@@ -405,22 +441,44 @@ namespace UTM
 
         private void FilteringData()
         {
+            double minYAfterFilter = Double.MaxValue;
+            minYIndex = 0;
+            double xAxisShifterValue = 0;
+
             try
             {
                 _yAxisDataArray = DataAnalysis(_yAxisDataArray);
 
-                //replace negative with 0;
-                for(int i = 0; i < _yAxisDataArray.Length ; i++)
-                {
+                for (int i = 0; i < _yAxisDataArray.Length; i++) { 
                     
-                    if(_yAxisDataArray[i] < 0)
-                        _yAxisDataArray[i] = 0;
-
-                    if (_yAxisDataArray[i] > maxY) {
-                        maxY = _yAxisDataArray[i];
+                    if(_yAxisDataArray[i] <= minYAfterFilter) {
+                        minYAfterFilter = _yAxisDataArray[i];
+                        minYIndex = i;
+                        xAxisShifterValue = _xAxisDataArray[i];
                     }
 
                 }
+
+                for (int i = 0; i < _yAxisDataArray.Length-minYIndex; i++)
+                {
+                    _yAxisDataArray[i] = _yAxisDataArray[i + minYIndex] - minYAfterFilter;
+                    _xAxisDataArray[i] = _xAxisDataArray[i + minYIndex] - xAxisShifterValue;
+                    if(maxY < _yAxisDataArray[i])
+                    {
+                        maxY = _yAxisDataArray[i];
+                    }
+                }
+                
+
+                //Console.WriteLine("minXWhenYZero : " + minXWhenYZero);
+                /*for (int i = 0; i < _yAxisDataArray.Length; i++)
+                {
+                    _xAxisDataArray[i] = _xAxisDataArray[i] - minXWhenYZero;
+
+                    if(_xAxisDataArray[i] < 0) {
+                        _xAxisDataArray[i] = 0;
+                    }
+                }*/
             }
             catch (Exception ex)
             {
@@ -430,7 +488,7 @@ namespace UTM
         }
         private double[] DataAnalysis(double[] data)
         {
-            SavitzkyGolayFilter filter = new SavitzkyGolayFilter(100, 3);
+            SavitzkyGolayFilter filter = new SavitzkyGolayFilter(Variables.points, Variables.degree);
             return filter.Process(data);
         }
 
@@ -449,7 +507,8 @@ namespace UTM
             openFileDialog.CheckFileExists = true;
             openFileDialog.CheckPathExists = true;
 
-            if (openFileDialog.ShowDialog() == DialogResult.OK){
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
                 Variables.selectedDataFile = openFileDialog.FileName;
             }
         }
@@ -497,12 +556,14 @@ namespace UTM
         }
 
 
-        private void ReDrawInit() {
+        private void ReDrawInit()
+        {
             utm_chart.Series[0].Points.Clear();
             utm_chart.Series[0].Enabled = false;
             chartArea.AxisX.LabelStyle.Format = "{0.000}";
 
-            if (graphChooser == 1){
+            if (graphChooser == 1)
+            {
                 utm_chart.Series.Add(new Series("2% offset plot"));
                 utm_chart.Series[1].BorderWidth = 1;
                 utm_chart.Series[1].ChartType = SeriesChartType.Line;
@@ -511,16 +572,17 @@ namespace UTM
                 utm_chart.Series[2].BorderWidth = 1;
                 utm_chart.Series[2].ChartType = SeriesChartType.Line;
             }
-            else {
+            else
+            {
                 utm_chart.Series.Add(new Series("Filtered Graph"));
                 utm_chart.Series[1].BorderWidth = 1;
                 utm_chart.Series[1].ChartType = SeriesChartType.Line;
             }
-            
+
         }
         private void ReDrawFilteredData()
         {
-            if(graphChooser == 1)
+            if (graphChooser == 1)
                 utm_chart.Series[2].Points.DataBindXY(_xAxisDataArray, _yAxisDataArray);
             else
                 utm_chart.Series[1].Points.DataBindXY(_xAxisDataArray, _yAxisDataArray);
@@ -529,13 +591,13 @@ namespace UTM
         private void Draw2PercentOffset()
         {
 
-            int Index = 40;
+            int Index = 50;
             double[] X = new double[Index];
             double[] Y = new double[Index];
 
 
             //utm_chart.Series[1].Points.Clear();
-
+            double stepValue = ((maxY + 40 - interceptPoint) / slop_r) / Index;
             double _x = 0.002;
             double _y = 0;
             for (int i = 0; i < Index; i++)
@@ -545,7 +607,7 @@ namespace UTM
                 //utm_chart.Series[1].Points.AddXY(_x, _y);
                 X[i] = _x; Y[i] = _y;
 
-                _x = _x + 0.0001;
+                _x = _x + stepValue;
             }
             utm_chart.Series[1].Points.DataBindXY(X, Y);
         }
@@ -583,7 +645,7 @@ namespace UTM
                 slop_r = 0;
                 interceptPoint = 0;
                 time = DateTime.Now.ToFileTime().ToString();
-                
+
                 graphChooser = ((System.Collections.Generic.KeyValuePair<int, string>)(graph_combo_box.SelectedItem)).Key;
 
                 SetGraphAxisLabel();
@@ -715,7 +777,7 @@ namespace UTM
                 //realTimeDataStorage.Clear();
                 //Variables.selectedDataFile = null;
                 SaveExperiment();
-                Util.ShowInfo(message_label, "Finish - UTS: "+maxY.ToString("F")+", Slop: "+slop_r.ToString("F"));
+                Util.ShowInfo(message_label, "Finish - UTS: " + maxY.ToString("F") + ", Slop: " + slop_r.ToString("F"));
             }
             catch (Exception ex)
             {
@@ -726,7 +788,7 @@ namespace UTM
 
         private void ReProcessing()
         {
-            
+
             Thread.Sleep(1000);
             FilteringData();
             if (graphChooser == 1)
